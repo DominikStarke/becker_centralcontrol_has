@@ -8,11 +8,13 @@ Requires a fully set-up CC31, CC41 or CC51.
 
 ## Installation:
 
-Navigate to the ```YOUR_HAS_CONFIG_DIR/custom_components``` directory.   
+Navigate to the ```$HASS_CONFIG_DIR/custom_components``` directory.   
 
 Clone the repository: ```git clone https://github.com/DominikStarke/becker_centralcontrol_has.git```
 
-Restart Homeassistant to load the new integration.
+Restart Homeassistant to load the new integration.  
+
+*Alternatively* you can also get the code as [zip file](https://github.com/DominikStarke/becker_centralcontrol_has/archive/refs/heads/main.zip) and unpack it manually to the ```$HASS_CONFIG_DIR/custom_components``` directory
 
 ## Usage:
 ![Step 1](assets/1.png)
@@ -22,7 +24,7 @@ Got to settings > add integration.
 Add the CentralControl integration.
 
 ![Step 3](assets/3.png)
-Configure the host: ```http://IP_OF_CENTRAL_CONTROL/cgi-bin/cc51rpc.cgi```  
+Configure the host: ```http://$CENTRAL_CONTROL_IP_ADR/cgi-bin/cc51rpc.cgi```  
 Leave the cookie field empty.
 
 ![Step 4](assets/4.png)
@@ -51,7 +53,7 @@ That means it's not possible to connect to a CentralControl on the same Network 
 
 It's possible to use ssh to open a forward tunnel:
 ```
-ssh -fN -L 8080:{CC_ADDRESS}:80 {CC_ADDRESS}
+ssh -fN -L 8080:$CENTRAL_CONTROL_IP_ADR:80 $CENTRAL_CONTROL_IP_ADR
 ```
 
 Then during integration setup use ```http://host.docker.internal:8080/cgi-bin/cc51rpc.cgi``` as hostname.
