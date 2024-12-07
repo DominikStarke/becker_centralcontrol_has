@@ -1,0 +1,13 @@
+{
+  "domain": "beckerantriebe",
+  "name": "CentralControl",
+  "codeowners": ["@BeckerAntriebeGmbh"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://www.home-assistant.io/integrations/beckerantriebe",
+  "homekit": {},
+  "iot_class": "local_polling",
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": ["_http._tcp.local."]
+}
