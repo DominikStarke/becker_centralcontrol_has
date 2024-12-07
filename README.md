@@ -15,7 +15,8 @@ Copy the code from the cloned repository to the ```custom_components/beckerantri
 Restart Homeassistant to load the new integration.
 
 ## Usage:
-Once the integration is added it will prompt to input the ip and an optional cookie.  
+Once the integration is added it will prompt to input the central controls host and an optional cookie.  
+The host needs to include the api endpoints path: ```http://IP_OF_CENTRAL_CONTROL/cgi-bin/cc51rpc.cgi```  
 Leave the cookie empty.
 
 You'll be prompted with a list of devices to add to your homeassistant installation.
@@ -42,5 +43,7 @@ It's possible to use ssh to open a forward tunnel:
 ssh -fN -L 8080:{CC_ADDRESS}:80 {CC_ADDRESS}
 ```
 
-Then during integration setup use ```http://host.docker.internal:8080``` as hostname.
+Then during integration setup use ```http://host.docker.internal:8080/cgi-bin/cc51rpc.cgi``` as hostname.
 
+## Contributing
+All contributions are welcome
