@@ -8,16 +8,33 @@ Requires a fully set-up CC31, CC41 or CC51.
 
 ## Installation:
 
-Navigate to the ```custom_components``` directory of your Homeassistant configuration:  
+Navigate to the ```YOUR_HAS_CONFIG_DIR/custom_components``` directory.   
 
-Copy the code from the cloned repository to the ```custom_components/beckerantriebe``` directory.
+Clone the repository: ```git clone https://github.com/DominikStarke/becker_centralcontrol_has.git```
 
 Restart Homeassistant to load the new integration.
 
 ## Usage:
+![Step 1](assets/1.png)
+Got to settings > add integration.
+
+![Step 2](assets/2.png)
+Add the CentralControl integration.
+
+![Step 3](assets/3.png)
+Configure the host: ```http://IP_OF_CENTRAL_CONTROL/cgi-bin/cc51rpc.cgi```  
+Leave the cookie field empty.
+
+![Step 4](assets/4.png)
+If everything went smoothly you should be presented a list of devices.
+*Note:* Sometimes only 1 device is listed. After selection the other devices will be listed.
+
+![Step 5](assets/5.png)
+Devices are mapped to entities and added accordingly
+
 Once the integration is added it will prompt to input the central controls host and an optional cookie.  
 The host needs to include the api endpoints path: ```http://IP_OF_CENTRAL_CONTROL/cgi-bin/cc51rpc.cgi```  
-Leave the cookie empty.
+
 
 You'll be prompted with a list of devices to add to your homeassistant installation.
 
@@ -46,4 +63,4 @@ ssh -fN -L 8080:{CC_ADDRESS}:80 {CC_ADDRESS}
 Then during integration setup use ```http://host.docker.internal:8080/cgi-bin/cc51rpc.cgi``` as hostname.
 
 ## Contributing
-All contributions are welcome
+Contributions are welcome
