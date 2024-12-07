@@ -32,12 +32,6 @@ If everything went smoothly you should be presented a list of devices.
 ![Step 5](assets/5.png)
 Devices are mapped to entities and added accordingly
 
-Once the integration is added it will prompt to input the central controls host and an optional cookie.  
-The host needs to include the api endpoints path: ```http://IP_OF_CENTRAL_CONTROL/cgi-bin/cc51rpc.cgi```  
-
-
-You'll be prompted with a list of devices to add to your homeassistant installation.
-
 ## Zero-Conf / MDNS / AVAHI
 Currently not supported.
 
