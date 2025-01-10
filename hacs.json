@@ -1,0 +1,8 @@
+{
+  "name": "Control your Becker Centronic, CentronicPLUS and B-Tronic devices with Homeassistant.  ",
+  "render_readme": true,
+  "hide_default_branch": true,
+  "homeassistant": "2024.10.1",
+  "content_in_root": true,
+  "country": "DE"
+}
