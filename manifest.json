@@ -6,9 +6,10 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/DominikStarke/becker_centralcontrol_has",
+  "issue_tracker": "https://github.com/DominikStarke/becker_centralcontrol_has/issues",
   "homekit": {},
   "iot_class": "local_polling",
   "requirements": [],
   "ssdp": [],
-  "zeroconf": ["_http._tcp.local."]
+  "zeroconf": []
 }
