@@ -104,6 +104,13 @@ class BeckerLight(LightEntity):
             return ColorMode.BRIGHTNESS
         return ColorMode.ONOFF
 
+    @property
+    def supported_color_modes(self) -> set[str]:
+        """Flag supported color mode."""
+        if self._item["device_type"] == "dimmer":
+            return {ColorMode.BRIGHTNESS}
+        return {ColorMode.ONOFF}
+
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn the light on."""
         await self._central_control.group_send_command(
