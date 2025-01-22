@@ -102,6 +102,8 @@ class BeckerCover(CoverEntity):
     @property
     def is_closed(self) -> bool | None:
         """Return if the cover is closed."""
+        if self._item.get("backend") == "centronic":
+            return None
         if self._attr_current_cover_position == 0:
             return True
         return False
