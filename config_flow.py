@@ -5,14 +5,11 @@ import logging
 import voluptuous as vol
 
 from homeassistant import config_entries, exceptions
-from homeassistant.components import zeroconf
 from homeassistant.const import CONF_HOST, CONF_TOKEN
 from homeassistant.core import HomeAssistant
 import homeassistant.helpers.config_validation as cv
 
 from .const import DOMAIN
-
-# from .service_listener import CentralControlDiscovery
 
 _LOGGER = logging.getLogger(__name__)
 DATA_SCHEMA = vol.Schema(
@@ -44,19 +41,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "unknown"
 
         return self.async_show_form(data_schema=DATA_SCHEMA, errors=errors)
-
-    async def async_step_zeroconf(
-        self, discovery_info: zeroconf.ZeroconfServiceInfo
-    ) -> config_entries.ConfigFlowResult:
-        """Handle Zeroconf discovery."""
-
-        # return await self.async_step_discovery_confirm()
-
-    async def async_step_discovery_confirm(
-        self, user_input: dict[str, vol.Any] | None = None
-    ) -> config_entries.ConfigFlowResult:
-        """Confirm discovery."""
-        _LOGGER.exception("[async_step_discovery_confirm] zeroconf not implemented yet")
 
 
 class CannotConnect(exceptions.HomeAssistantError):
