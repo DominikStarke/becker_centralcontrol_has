@@ -17,7 +17,7 @@ from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .central_control import CentralControl
 from .const import BECKER_LIGHT_TYPES, DOMAIN, MANUFACTURER
@@ -35,7 +35,7 @@ LIGHT_PLATFORM_SCHEMA = LIGHT_PLATFORM_SCHEMA.extend(
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
-    async_add_entities: AddConfigEntryEntitiesCallback,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Glue light items to HASS entities."""
 

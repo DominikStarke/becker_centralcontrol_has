@@ -19,7 +19,7 @@ from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .central_control import CentralControl
 from .const import BECKER_COVER_REVERSE_TYPES, COVER_MAPPING, DOMAIN, MANUFACTURER
@@ -39,7 +39,7 @@ COVER_PLATFORM_SCHEMA = COVER_PLATFORM_SCHEMA.extend(
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
-    async_add_entities: AddConfigEntryEntitiesCallback,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Glue cover items to HASS entities."""
 
