@@ -176,7 +176,7 @@ class BeckerCover(CoverEntity):
         """Set the covers position."""
 
         value = int(kwargs[ATTR_POSITION])
-        if self.reversed:
+        if not self.reversed:
             value = 100 - value
 
         await self._central_control.group_send_command(
