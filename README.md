@@ -9,7 +9,11 @@ Requires a fully set-up CC31, CC41 or CC51.
   _Some functions might be unsupported right now (e.g. slat)_
 - Dimmer
 - Switch (All CentronicPLUS, Centronic B-Tronic and internal switches)
-- Sensors with Sun, Wind, Rain (SC911+, SC811+, other devices are untested or unsupported)
+- Sensors with Sun, Wind, Rain (SC911+, SC811+, other devices are untested or unsupported)  
+  _Values are unmapped, sensor values will be:_
+  * Sun: 0 - 15
+  * Wind: 0 - 11
+  * Rain: 0 (no rain) or 1 (rain)
 
 ## Usage:
 
