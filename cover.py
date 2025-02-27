@@ -19,7 +19,7 @@ from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .central_control import CentralControl
 from .const import BECKER_COVER_REVERSE_TYPES, COVER_MAPPING, DOMAIN, MANUFACTURER
@@ -37,30 +37,30 @@ COVER_PLATFORM_SCHEMA = COVER_PLATFORM_SCHEMA.extend(
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Glue cover items to HASS entities."""
 
     central_control: CentralControl = entry.runtime_data
     try:
         item_list = await central_control.get_item_list(item_type="group")
+        cover_list = []
+
+        for item in item_list.get("result", {}).get("item_list", []):
+            device_class = COVER_MAPPING.get(item.get("device_type"), None)
+            if device_class is not None:
+                cover_list.append(
+                    BeckerCover(
+                        central_control=central_control,
+                        item=item,
+                    )
+                )
+
+        async_add_entities(cover_list)
     except TimeoutError:
         _LOGGER.error("Failed to get item list")
-        return
-
-    cover_list = []
-
-    for item in item_list["result"]["item_list"]:
-        device_class = COVER_MAPPING.get(item["device_type"], None)
-        if device_class is not None:
-            cover_list.append(
-                BeckerCover(
-                    central_control=central_control,
-                    item=item,
-                )
-            )
-
-    async_add_entities(cover_list)
 
 
 class BeckerCover(CoverEntity):
@@ -87,7 +87,7 @@ class BeckerCover(CoverEntity):
     @property
     def device_class(self) -> CoverDeviceClass | None:
         """Return the class of this device, from component DEVICE_CLASSES."""
-        return COVER_MAPPING.get(self._item["device_type"])
+        return COVER_MAPPING.get(self._item.get("device_type"))
 
     @property
     def is_opening(self) -> bool | None:
@@ -111,7 +111,7 @@ class BeckerCover(CoverEntity):
     @property
     def unique_id(self) -> str:
         """The items unique id."""
-        return str(self._item["id"])
+        return str(self._item.get("id"))
 
     @property
     def name(self) -> str:
@@ -131,30 +131,37 @@ class BeckerCover(CoverEntity):
         _supported_features = (
             CoverEntityFeature.OPEN | CoverEntityFeature.STOP | CoverEntityFeature.CLOSE
         )
-        if self._item["feedback"] is True:
+        if self._item.get("feedback") is True:
             _supported_features |= CoverEntityFeature.SET_POSITION
 
         return _supported_features
 
     @property
     def reversed(self) -> bool:
-        """Whether is reversed."""
-        return self._item["device_type"] in BECKER_COVER_REVERSE_TYPES
+        """Whether the conver is reversed (only awning)."""
+        return self._item.get("device_type") in BECKER_COVER_REVERSE_TYPES
 
     async def async_close_cover(self, **kwargs: Any) -> None:
         """Close the cover."""
+        direction = 1
+        if self.reversed:
+            direction = -1
         await self._central_control.group_send_command(
             group_id=int(self.unique_id),
             command="move",
-            value=1,
+            value=direction,
         )
 
     async def async_open_cover(self, **kwargs: Any) -> None:
         """Open the cover."""
+        direction = -1
+        if self.reversed:
+            direction = 1
+
         await self._central_control.group_send_command(
             group_id=int(self.unique_id),
             command="move",
-            value=-1,
+            value=direction,
         )
 
     async def async_stop_cover(self, **kwargs: Any) -> None:
@@ -167,10 +174,15 @@ class BeckerCover(CoverEntity):
 
     async def async_set_cover_position(self, **kwargs: Any) -> None:
         """Set the covers position."""
+
+        value = int(kwargs[ATTR_POSITION])
+        if self.reversed:
+            value = 100 - value
+
         await self._central_control.group_send_command(
             group_id=int(self.unique_id),
             command="moveto",
-            value=int(kwargs[ATTR_POSITION]),
+            value=value,
         )
 
     async def async_added_to_hass(self) -> None:
@@ -181,5 +193,8 @@ class BeckerCover(CoverEntity):
         """Update brightness."""
         state = await self._central_control.get_state(item_id=int(self.unique_id))
         if state.get("value", None) is not None:
-            self._attr_current_cover_position = 100 - int(state["value"])
+            if self.reversed:
+                self._attr_current_cover_position = int(state.get("value", "0"))
+            else:
+                self._attr_current_cover_position = 100 - int(state.get("value", "0"))
             _LOGGER.log(logging.INFO, state)

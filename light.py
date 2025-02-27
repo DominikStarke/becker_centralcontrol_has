@@ -17,7 +17,7 @@ from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .central_control import CentralControl
 from .const import BECKER_LIGHT_TYPES, DOMAIN, MANUFACTURER
@@ -33,30 +33,31 @@ LIGHT_PLATFORM_SCHEMA = LIGHT_PLATFORM_SCHEMA.extend(
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Glue light items to HASS entities."""
 
     central_control: CentralControl = entry.runtime_data
     try:
         item_list = await central_control.get_item_list(item_type="group")
+        light_list = []
+
+        for item in item_list.get("result", {}).get("item_list", []):
+            device_class = item.get("device_type") in BECKER_LIGHT_TYPES
+            if device_class is not False:
+                light_list.append(
+                    BeckerLight(
+                        central_control=central_control,
+                        item=item,
+                    )
+                )
+
+        async_add_entities(light_list)
     except TimeoutError:
         _LOGGER.error("Failed to get item list")
         return
-
-    light_list = []
-
-    for item in item_list["result"]["item_list"]:
-        device_class = item["device_type"] in BECKER_LIGHT_TYPES
-        if device_class is not False:
-            light_list.append(
-                BeckerLight(
-                    central_control=central_control,
-                    item=item,
-                )
-            )
-
-    async_add_entities(light_list)
 
 
 class BeckerLight(LightEntity):
@@ -83,7 +84,7 @@ class BeckerLight(LightEntity):
     @property
     def unique_id(self) -> str:
         """The items unique id."""
-        return str(self._item["id"])
+        return str(self._item.get("id"))
 
     @property
     def name(self) -> str:
@@ -100,14 +101,14 @@ class BeckerLight(LightEntity):
     @property
     def color_mode(self) -> ColorMode | str | None:
         """Flag supported color mode."""
-        if self._item["device_type"] == "dimmer":
+        if self._item.get("device_type") == "dimmer":
             return ColorMode.BRIGHTNESS
         return ColorMode.ONOFF
 
     @property
     def supported_color_modes(self) -> set[str]:
         """Flag supported color mode."""
-        if self._item["device_type"] == "dimmer":
+        if self._item.get("device_type") == "dimmer":
             return {ColorMode.BRIGHTNESS}
         return {ColorMode.ONOFF}
 
@@ -135,6 +136,6 @@ class BeckerLight(LightEntity):
         """Update brightness."""
         state = await self._central_control.get_state(item_id=int(self.unique_id))
         if state.get("value", None) is not None:
-            self._attr_is_on = bool(state["value"])
-            self._attr_brightness = int(state["value"])
+            self._attr_is_on = bool(state.get("value"))
+            self._attr_brightness = int(state.get("value"))
             _LOGGER.log(logging.INFO, state)

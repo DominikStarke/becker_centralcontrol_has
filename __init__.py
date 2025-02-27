@@ -9,7 +9,7 @@ from homeassistant.core import HomeAssistant
 from .central_control import CentralControl
 from .const import PLATFORMS
 
-type CentralControlConfigEntry = ConfigEntry[CentralControl]  # noqa: F821
+type CentralControlConfigEntry = ConfigEntry[CentralControl]
 
 
 async def async_setup_entry(

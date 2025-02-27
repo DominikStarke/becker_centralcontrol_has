@@ -5,7 +5,7 @@ from enum import StrEnum
 from homeassistant.components.cover import CoverDeviceClass
 from homeassistant.const import Platform
 
-PLATFORMS: list[Platform] = [Platform.COVER, Platform.LIGHT]
+PLATFORMS: list[Platform] = [Platform.COVER, Platform.LIGHT, Platform.SENSOR]
 DOMAIN = "beckerantriebe"
 MANUFACTURER = "Becker Antriebe GmbH"
 
@@ -26,6 +26,33 @@ class DEVICE_TYPES(StrEnum):
     TILT_WINDOW = "tilt-window"
     DIMMER = "dimmer"
     SWITCH = "switch"
+
+
+class SENSOR_TYPES(StrEnum):
+    """Central Control sensor types."""
+
+    SUN = "sensor-sun"
+    WIND = "sensor-wind"
+    RAIN = "sensor-rain"
+    DAWN = "sensor-dawn"
+    TEMPERATURE = "sensor-temperature"
+    SUN_WIND = "sensor-sun-wind"
+    SUN_RAIN = "sensor-sun-rain"
+    SUN_WIND_RAIN = "sensor-sun-wind-rain"
+    SUN_WIND_RAIN_DAWN = "sensor-sun-wind-rain-dawn"
+
+
+SENSOR_MAPPING = {
+    SENSOR_TYPES.SUN: ["sun"],
+    SENSOR_TYPES.WIND: ["wind"],
+    SENSOR_TYPES.RAIN: ["rain"],
+    SENSOR_TYPES.DAWN: ["dawn"],
+    SENSOR_TYPES.TEMPERATURE: ["temperature"],
+    SENSOR_TYPES.SUN_WIND: ["sun", "wind"],
+    SENSOR_TYPES.SUN_RAIN: ["sun", "rain"],
+    SENSOR_TYPES.SUN_WIND_RAIN: ["sun", "wind", "rain"],
+    SENSOR_TYPES.SUN_WIND_RAIN_DAWN: ["sun", "wind", "rain", "dawn"],
+}
 
 
 COVER_MAPPING = {
