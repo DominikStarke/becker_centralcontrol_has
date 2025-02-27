@@ -25,16 +25,27 @@ class CentralControl:
         if cookie is not None:
             self._headers["Cookie"] = cookie
 
-    async def _jrpc_request(self, data: dict, timeout: int = 10) -> dict | list:
-        async with asyncio.timeout(timeout):
-            response: requests.Response = await asyncio.to_thread(
-                requests.post,
-                url=self.address,
-                data=json.dumps(data) + "\0",
-                headers=self._headers,
-            )
+    async def _jrpc_request(
+        self, data: dict | list[dict], timeout: int = 10
+    ) -> dict | list | None:
+        try:
+            async with asyncio.timeout(timeout):
+                response: requests.Response = await asyncio.to_thread(
+                    requests.post,
+                    url=self.address,
+                    data=json.dumps(data) + "\0",
+                    headers=self._headers,
+                )
 
-            return json.loads(response.text.replace("\0", ""))
+                return json.loads(response.text.replace("\0", ""))
+        except TimeoutError:
+            if data is list:
+                return []
+            return {}
+        except json.decoder.JSONDecodeError:
+            if data is list:
+                return []
+            return {}
 
     async def get_item_list(
         self,
@@ -141,7 +152,7 @@ class CentralControl:
         * error_count: the number of erroneous devices (optional Number)
         * scheduled_cmd: True if there is a pending close command on this group. (optional Bool)
         """
-        data = await self._jrpc_request(
+        data: list = await self._jrpc_request(
             data=[
                 {
                     "jsonrpc": "2.0",
@@ -157,6 +168,11 @@ class CentralControl:
                 },
             ]
         )
+
+        if len(data) < 1:
+            return {}
+        if len(data) < 2:
+            return data[0].get("result", {}).get("state", {})
 
         group_state = data[0].get("result", {}).get("state", {})
         item_state = data[1].get("result", {}).get("state", {})
