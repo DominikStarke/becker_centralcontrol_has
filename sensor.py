@@ -80,7 +80,7 @@ class BeckerSensor(SensorEntity):
             self._attr_device_class = SensorDeviceClass.ILLUMINANCE
             self._attr_state_class = SensorStateClass.MEASUREMENT
         elif value is SENSOR_MAPPING[SENSOR_TYPES.WIND][0]:
-            self._attr_native_unit_of_measurement = UnitOfSpeed.METERS_PER_SECOND
+            self._attr_native_unit_of_measurement = UnitOfSpeed.KILOMETERS_PER_HOUR
             self._attr_device_class = SensorDeviceClass.WIND_SPEED
             self._attr_state_class = SensorStateClass.MEASUREMENT
         elif value is SENSOR_MAPPING[SENSOR_TYPES.RAIN][0]:
@@ -121,4 +121,6 @@ class BeckerSensor(SensorEntity):
         """Update brightness."""
 
         state = await self._central_control.get_state(item_id=int(self._item.get("id")))
-        self._attr_native_value = state.get(f"value-{self._sensor_type}")
+        value = state.get(f"value-{self._sensor_type}")
+        if value is not None:
+            self._attr_native_value = round(state.get(f"value-{self._sensor_type}"), 1)

@@ -39,6 +39,7 @@ class SENSOR_TYPES(StrEnum):
     SUN_WIND = "sensor-sun-wind"
     SUN_RAIN = "sensor-sun-rain"
     SUN_WIND_RAIN = "sensor-sun-wind-rain"
+    SUN_WIND_RAIN_TEMP = "sensor-sun-wind-rain-temp"
     SUN_WIND_RAIN_DAWN = "sensor-sun-wind-rain-dawn"
 
 
@@ -47,10 +48,11 @@ SENSOR_MAPPING = {
     SENSOR_TYPES.WIND: ["wind"],
     SENSOR_TYPES.RAIN: ["rain"],
     SENSOR_TYPES.DAWN: ["dawn"],
-    SENSOR_TYPES.TEMPERATURE: ["temperature"],
+    SENSOR_TYPES.TEMPERATURE: ["temp"],
     SENSOR_TYPES.SUN_WIND: ["sun", "wind"],
     SENSOR_TYPES.SUN_RAIN: ["sun", "rain"],
     SENSOR_TYPES.SUN_WIND_RAIN: ["sun", "wind", "rain"],
+    SENSOR_TYPES.SUN_WIND_RAIN_TEMP: ["sun", "wind", "rain", "temp"],
     SENSOR_TYPES.SUN_WIND_RAIN_DAWN: ["sun", "wind", "rain", "dawn"],
 }
 

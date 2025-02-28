@@ -192,9 +192,8 @@ class BeckerCover(CoverEntity):
     async def async_update(self) -> None:
         """Update brightness."""
         state = await self._central_control.get_state(item_id=int(self.unique_id))
-        if state.get("value", None) is not None:
+        if state is not None and state.get("value", None) is not None:
             if self.reversed:
                 self._attr_current_cover_position = int(state.get("value", "0"))
             else:
                 self._attr_current_cover_position = 100 - int(state.get("value", "0"))
-            _LOGGER.log(logging.INFO, state)
