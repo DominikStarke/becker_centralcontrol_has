@@ -1,0 +1,29 @@
+{
+  "common": {
+    "invert_position": "Behang-Positionen umkehren",
+    "device_ip": "Geräte-IP"
+  },
+  "entity": {
+    "sensor": {
+      "dawn": {
+        "name": "Dämmerung"
+      },
+      "sun": {
+        "name": "Sonne"
+      },
+      "wind": {
+        "name": "Wind"
+      },
+      "rain": {
+        "name": "Regen",
+        "state": {
+          "dry": "Trocken",
+          "rain": "Regen"
+        }
+      },
+      "temp": {
+        "name": "Temperatur"
+      }
+    }
+  }
+}

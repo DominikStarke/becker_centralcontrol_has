@@ -1,13 +1,40 @@
 {
+  "common": {
+    "invert_position": "Invert cover position",
+    "device_ip": "Device IP"
+  },
+
   "config": {
     "step": {
-      "confirm": {
-        "description": "[%key:common::config_flow::description::confirm_setup%]"
+      "user": {
+        "data": {
+          "invert_position": "[%key:common::invert_position%]",
+          "device_ip": "[%key:common::device_ip%]"
+        }
+      },
+      "reconfigure": {
+        "data": {
+          "invert_position": "[%key:common::invert_position%]",
+          "device_ip": "[%key:common::device_ip%]"
+        }
       }
-    },
-    "abort": {
-      "single_instance_allowed": "[%key:common::config_flow::abort::single_instance_allowed%]",
-      "no_devices_found": "[%key:common::config_flow::abort::no_devices_found%]"
+    }
+  },
+
+  "options": {
+    "step": {
+      "user": {
+        "data": {
+          "invert_position": "[%key:common::invert_position%]",
+          "device_ip": "[%key:common::device_ip%]"
+        }
+      },
+      "reconfigure": {
+        "data": {
+          "invert_position": "[%key:common::invert_position%]",
+          "device_ip": "[%key:common::device_ip%]"
+        }
+      }
     }
   }
 }

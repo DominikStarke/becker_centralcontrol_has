@@ -6,7 +6,7 @@ from homeassistant.components.cover import CoverDeviceClass
 from homeassistant.const import Platform
 
 PLATFORMS: list[Platform] = [Platform.COVER, Platform.LIGHT, Platform.SENSOR]
-DOMAIN = "beckerantriebe"
+DOMAIN = "becker_centralcontrol_has"
 MANUFACTURER = "Becker Antriebe GmbH"
 
 
@@ -28,7 +28,7 @@ class DEVICE_TYPES(StrEnum):
     SWITCH = "switch"
 
 
-class SENSOR_TYPES(StrEnum):
+class REMOTE_TYPES(StrEnum):
     """Central Control sensor types."""
 
     SUN = "sensor-sun"
@@ -43,17 +43,17 @@ class SENSOR_TYPES(StrEnum):
     SUN_WIND_RAIN_DAWN = "sensor-sun-wind-rain-dawn"
 
 
-SENSOR_MAPPING = {
-    SENSOR_TYPES.SUN: ["sun"],
-    SENSOR_TYPES.WIND: ["wind"],
-    SENSOR_TYPES.RAIN: ["rain"],
-    SENSOR_TYPES.DAWN: ["dawn"],
-    SENSOR_TYPES.TEMPERATURE: ["temp"],
-    SENSOR_TYPES.SUN_WIND: ["sun", "wind"],
-    SENSOR_TYPES.SUN_RAIN: ["sun", "rain"],
-    SENSOR_TYPES.SUN_WIND_RAIN: ["sun", "wind", "rain"],
-    SENSOR_TYPES.SUN_WIND_RAIN_TEMP: ["sun", "wind", "rain", "temp"],
-    SENSOR_TYPES.SUN_WIND_RAIN_DAWN: ["sun", "wind", "rain", "dawn"],
+REMOTE_SUPPORTED_VALUES = {
+    REMOTE_TYPES.SUN: ["sun"],
+    REMOTE_TYPES.WIND: ["wind"],
+    REMOTE_TYPES.RAIN: ["rain"],
+    REMOTE_TYPES.DAWN: ["dawn"],
+    REMOTE_TYPES.TEMPERATURE: ["temp"],
+    REMOTE_TYPES.SUN_WIND: ["sun", "wind"],
+    REMOTE_TYPES.SUN_RAIN: ["sun", "rain"],
+    REMOTE_TYPES.SUN_WIND_RAIN: ["sun", "wind", "rain"],
+    REMOTE_TYPES.SUN_WIND_RAIN_TEMP: ["sun", "wind", "rain", "temp", "dawn"],
+    REMOTE_TYPES.SUN_WIND_RAIN_DAWN: ["sun", "wind", "rain", "dawn"],
 }
 
 

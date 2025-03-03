@@ -74,6 +74,7 @@ class BeckerCover(CoverEntity):
         """Initialize the cover."""
         self._central_control: CentralControl = central_control
         self._item = item
+        self.entity_id = f"cover.{DOMAIN}_{item['name']}"
 
     @property
     def device_info(self) -> DeviceInfo:

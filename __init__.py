@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_TOKEN
 from homeassistant.core import HomeAssistant
 
 from .central_control import CentralControl
@@ -17,8 +16,9 @@ async def async_setup_entry(
 ) -> bool:
     """Set up CentralControl from a config entry."""
 
-    address = entry.data[CONF_HOST]
-    cookie = entry.data.get(CONF_TOKEN, None)
+    address = entry.data["device_ip"]
+    cookie = entry.data.get("gw_token", None)
+    invert_position = entry.options.get("invert_position", False)
 
     central_control = CentralControl(
         address=address,

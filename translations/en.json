@@ -1,13 +1,29 @@
 {
-    "config": {
-        "abort": {
-            "no_devices_found": "No devices found on the network",
-            "single_instance_allowed": "Already configured. Only a single configuration possible."
-        },
-        "step": {
-            "confirm": {
-                "description": "Do you want to start setup?"
-            }
+  "common": {
+    "invert_position": "Invert cover position",
+    "device_ip": "Device IP"
+  },
+  "entity": {
+    "sensor": {
+      "dawn": {
+        "name": "Dawn"
+      },
+      "sun": {
+        "name": "Sun"
+      },
+      "wind": {
+        "name": "Wind"
+      },
+      "rain": {
+        "name": "Rain",
+        "state": {
+          "dry": "Dry",
+          "rain": "Rain"
         }
+      },
+      "temp": {
+        "name": "Temperature"
+      }
     }
+  }
 }

@@ -2,26 +2,25 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+from dataclasses import dataclass
 import logging
+from typing import Any, cast
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
+    SensorEntityDescription,
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    LIGHT_LUX,
-    UnitOfSpeed,
-    UnitOfTemperature,
-    UnitOfVolumeFlowRate,
-)
+from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .central_control import CentralControl
-from .const import DOMAIN, MANUFACTURER, SENSOR_MAPPING, SENSOR_TYPES
+from .const import DOMAIN, MANUFACTURER, REMOTE_SUPPORTED_VALUES, REMOTE_TYPES
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -39,18 +38,20 @@ async def async_setup_entry(
         sensor_list: list[BeckerSensor] = []
 
         for item in item_list.get("result", {}).get("item_list", []):
-            device_class = item.get("remote_type") in SENSOR_TYPES
+            remote_type = item.get("remote_type") in REMOTE_TYPES
 
-            if device_class is not False:
-                supported_values = SENSOR_MAPPING.get(item.get("remote_type", ""))
+            if remote_type is not False:
+                supported_values = REMOTE_SUPPORTED_VALUES.get(
+                    item.get("remote_type", ""), []
+                )
 
                 sensor_list.extend(
                     BeckerSensor(
                         central_control=central_control,
                         item=item,
-                        value=sensor_type,
+                        value_type=value_type,
                     )
-                    for sensor_type in supported_values
+                    for value_type in supported_values
                 )
 
         async_add_entities(sensor_list)
@@ -59,54 +60,78 @@ async def async_setup_entry(
         return
 
 
+@dataclass(frozen=True, kw_only=True)
+class CentralControlSensorDescription(SensorEntityDescription):
+    """Describes a CentralControl sensor."""
+
+    value_fn: Callable[[dict[str, Any]], str | int | float | None]
+
+
 class BeckerSensor(SensorEntity):
     """Representation of a sensor."""
 
     _attr_has_entity_name = True
+    entity_description: CentralControlSensorDescription
 
     def __init__(
         self,
         central_control,
         item,
-        value,
+        value_type,
     ) -> None:
         """Initialize the sensor."""
         self._central_control: CentralControl = central_control
+        self._attr_unique_id = f"{item['id']}-{value_type}"
         self._item = item
-        self._sensor_type = value
+        self._value_type = value_type
+        self.entity_id = f"sensor.{DOMAIN}_{item['name']}_{value_type}"
 
-        if value is SENSOR_MAPPING[SENSOR_TYPES.SUN][0]:
-            self._attr_native_unit_of_measurement = LIGHT_LUX
-            self._attr_device_class = SensorDeviceClass.ILLUMINANCE
-            self._attr_state_class = SensorStateClass.MEASUREMENT
-        elif value is SENSOR_MAPPING[SENSOR_TYPES.WIND][0]:
-            self._attr_native_unit_of_measurement = UnitOfSpeed.KILOMETERS_PER_HOUR
-            self._attr_device_class = SensorDeviceClass.WIND_SPEED
-            self._attr_state_class = SensorStateClass.MEASUREMENT
-        elif value is SENSOR_MAPPING[SENSOR_TYPES.RAIN][0]:
-            self._attr_native_unit_of_measurement = (
-                UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR
+        if value_type is REMOTE_SUPPORTED_VALUES[REMOTE_TYPES.TEMPERATURE][0]:
+            self.entity_description = CentralControlSensorDescription(
+                key=value_type,
+                value_fn=lambda data: data,
+                device_class=SensorDeviceClass.TEMPERATURE,
+                translation_key=value_type,
+                native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+                state_class=SensorStateClass.MEASUREMENT,
             )
-            self._attr_device_class = SensorDeviceClass.VOLUME_FLOW_RATE
-            self._attr_state_class = SensorStateClass.MEASUREMENT
-        elif value is SENSOR_MAPPING[SENSOR_TYPES.TEMPERATURE][0]:
-            self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
-            self._attr_device_class = SensorDeviceClass.TEMPERATURE
-            self._attr_state_class = SensorStateClass.MEASUREMENT
-        elif value is SENSOR_MAPPING[SENSOR_TYPES.DAWN][0]:
-            self._attr_native_unit_of_measurement = LIGHT_LUX
-            self._attr_device_class = SensorDeviceClass.ILLUMINANCE
-            self._attr_state_class = SensorStateClass.MEASUREMENT
-
-    @property
-    def name(self) -> str:
-        """The items name, "Unknown" if None."""
-        return self._sensor_type
-
-    @property
-    def unique_id(self) -> str:
-        """The items unique id."""
-        return f"{self._item['id']}-{self._sensor_type}"
+        elif value_type is REMOTE_SUPPORTED_VALUES[REMOTE_TYPES.SUN][0]:
+            self.entity_description = CentralControlSensorDescription(
+                key=value_type,
+                value_fn=lambda data: data,
+                icon="mdi:white-balance-sunny",
+                translation_key=value_type,
+                native_unit_of_measurement="/ 15",
+                state_class=SensorStateClass.MEASUREMENT,
+            )
+        elif value_type is REMOTE_SUPPORTED_VALUES[REMOTE_TYPES.WIND][0]:
+            self.entity_description = CentralControlSensorDescription(
+                key=value_type,
+                value_fn=lambda data: data,
+                icon="mdi:weather-dust",
+                translation_key=value_type,
+                native_unit_of_measurement="/ 11",
+                state_class=SensorStateClass.MEASUREMENT,
+            )
+        elif value_type is REMOTE_SUPPORTED_VALUES[REMOTE_TYPES.RAIN][0]:
+            options = ["dry", "rain"]
+            self.entity_description = CentralControlSensorDescription(
+                key=value_type,
+                value_fn=lambda data: options[data],
+                device_class=SensorDeviceClass.ENUM,
+                options=options,
+                icon="mdi:weather-rainy",
+                translation_key=value_type,
+            )
+        elif value_type is REMOTE_SUPPORTED_VALUES[REMOTE_TYPES.DAWN][0]:
+            self.entity_description = CentralControlSensorDescription(
+                key=value_type,
+                value_fn=lambda data: data,
+                icon="mdi:weather-sunset",
+                translation_key=value_type,
+                native_unit_of_measurement="/ 15",
+                state_class=SensorStateClass.MEASUREMENT,
+            )
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -117,10 +142,20 @@ class BeckerSensor(SensorEntity):
             name=self._item.get("name"),
         )
 
+    @property
+    def native_value(self) -> str | int | float | None:
+        """Return the state."""
+
+        if self._attr_native_value is None:
+            return None
+
+        return self.entity_description.value_fn(self._attr_native_value)
+
     async def async_update(self) -> None:
         """Update brightness."""
 
         state = await self._central_control.get_state(item_id=int(self._item.get("id")))
-        value = state.get(f"value-{self._sensor_type}")
+        value = state.get(f"value-{self._value_type}")
         if value is not None:
-            self._attr_native_value = round(state.get(f"value-{self._sensor_type}"), 1)
+            self._attr_native_value = round(state.get(f"value-{self._value_type}"), 1)
+            # self._attr_extra_state_attributes = {"rain": bool(self._attr_native_value)}
