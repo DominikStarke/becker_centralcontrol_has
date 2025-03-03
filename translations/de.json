@@ -1,8 +1,37 @@
 {
-  "common": {
-    "invert_position": "Behang-Positionen umkehren",
-    "device_ip": "Geräte-IP"
+  "config": {
+    "abort": {
+      "already_configured": "CentralControl ist bereits konfiguriert.",
+      "reconfigure_successful": "CentralControl erfolgreich neu konfiguriert."
+    },
+    "step": {
+      "user": {
+        "data": {
+          "invert_position": "Behang-Positionen umkehren",
+          "host_address": "Geräte-IP",
+          "prefix": "Präfix"
+        },
+        "data_description": {
+          "invert_position": "Kehrt die Darstellung der Position um.",
+          "host_address": "Die IP4-Adresse ihrer CentralControl.",
+          "prefix": "Fügt Entitäten-Bezeichnungen ein Präfix hinzu."
+        }
+      },
+      "reconfigure": {
+        "data": {
+          "invert_position": "Behang-Positionen umkehren",
+          "host_address": "Geräte-IP",
+          "prefix": "Präfix"
+        },
+        "data_description": {
+          "invert_position": "Kehrt die Darstellung der Position um.",
+          "host_address": "Die IP4-Adresse ihrer CentralControl.",
+          "prefix": "Fügt Entitäten-Bezeichnungen ein Präfix hinzu."
+        }
+      }
+    }
   },
+
   "entity": {
     "sensor": {
       "dawn": {

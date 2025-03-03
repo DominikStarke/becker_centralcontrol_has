@@ -71,7 +71,7 @@ class BeckerLight(LightEntity):
         """Initialize the light."""
         self._central_control: CentralControl = central_control
         self._item = item
-        self.entity_id = f"light.{DOMAIN}_{item['name']}"
+        self.entity_id = f"light.{central_control.prefix}{item['name']}"
 
     @property
     def device_info(self) -> DeviceInfo:

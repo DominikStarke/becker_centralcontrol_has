@@ -7,8 +7,7 @@ from typing import Any
 import voluptuous as vol
 
 from homeassistant import config_entries, exceptions
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 import homeassistant.helpers.config_validation as cv
 
 from .const import DOMAIN
@@ -28,8 +27,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         if user_input is not None:
-            if not _is_valid_ip(user_input.get("device_ip", "")):
-                errors["device_ip"] = "invalid_ip"
+            if not _is_valid_ip(user_input.get("host_address", "")):
+                errors["host_address"] = "invalid_ip"
             try:
                 return self.async_create_entry(title="CentralControl", data=user_input)
             except CannotConnect:
@@ -45,13 +44,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema(
                 {
                     vol.Required(
-                        "device_ip",
+                        "host_address",
                         default="",
                     ): cv.string,
                     vol.Optional(
-                        "gw_token",
+                        "prefix",
                         default="",
-                    ): cv.string,
+                    ): str,
                     vol.Optional(
                         "invert_position",
                         default=False,
@@ -60,8 +59,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             ),
             errors=errors,
         )
-
-        # return self.async_show_form(data_schema=DATA_SCHEMA, errors=errors)
 
     async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None):
         """Handle reconfiguration of the entry."""
@@ -73,17 +70,17 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             tmp_user_input = user_input
 
         config_entry = self._get_reconfigure_entry()
-        device_ip = tmp_user_input.get("device_ip", config_entry.data["device_ip"])
-        gw_token = tmp_user_input.get(
-            "gw_token", config_entry.data.get("gw_token", None)
+        host_address = tmp_user_input.get(
+            "host_address", config_entry.data.get("host_address", "")
         )
+        prefix = tmp_user_input.get("prefix", config_entry.data.get("prefix", ""))
         invert_position = tmp_user_input.get(
-            "invert_position", config_entry.options.get("invert_position", False)
+            "invert_position", config_entry.data.get("invert_position", False)
         )
 
         if user_input is not None:
-            if not _is_valid_ip(user_input.get("device_ip", "")):
-                errors["device_ip"] = "invalid_ip"
+            if not _is_valid_ip(user_input.get("host_address", "")):
+                errors["host_address"] = "invalid_ip"
             else:
                 try:
                     self.hass.config_entries.async_update_entry(
@@ -104,13 +101,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema(
                 {
                     vol.Required(
-                        "device_ip",
-                        default=device_ip,
+                        "host_address",
+                        default=host_address,
                     ): cv.string,
                     vol.Optional(
-                        "gw_token",
-                        default=gw_token,
-                    ): cv.string,
+                        "prefix",
+                        default=prefix,
+                    ): str,
                     vol.Optional(
                         "invert_position",
                         default=invert_position,
@@ -120,58 +117,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    @staticmethod
-    @callback
-    def async_get_options_flow(
-        config_entry: ConfigEntry,
-    ) -> config_entries.OptionsFlow:
-        """Create the options flow."""
-        return OptionsFlow(config_entry=config_entry)
-
-
-class OptionsFlow(config_entries.OptionsFlow):
-    """Handle a option flow for CentralControl."""
-
-    def __init__(self, config_entry) -> None:
-        """Initialize the options flow."""
-
-        self._config_entry = config_entry
-
-    async def async_step_init(self, user_input=None):
-        """Manage the options."""
-
-        errors = {}
-
-        if user_input is not None:
-            if not _is_valid_ip(user_input.get("device_ip", "")):
-                errors["device_ip"] = "invalid_ip"
-
-            if not errors:
-                return self.async_create_entry(title="", data=user_input)
-
-        options_schema = vol.Schema(
-            {
-                vol.Optional(
-                    "invert_position",
-                    default=self.config_entry.options.get("invert_position", False),
-                ): bool,
-                vol.Required(
-                    "device_ip", default=self._config_entry.options.get("device_ip", "")
-                ): cv.string,
-            }
-        )
-
-        return self.async_show_form(
-            step_id="init",
-            data_schema=options_schema,
-            errors=errors,
-        )
-
 
 def _is_valid_ip(ip: str) -> bool:
     """Check for valid ip address."""
 
-    return True
     try:
         ipaddress.ip_address(ip)
     except ValueError:

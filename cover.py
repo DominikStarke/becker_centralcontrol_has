@@ -74,7 +74,7 @@ class BeckerCover(CoverEntity):
         """Initialize the cover."""
         self._central_control: CentralControl = central_control
         self._item = item
-        self.entity_id = f"cover.{DOMAIN}_{item['name']}"
+        self.entity_id = f"cover.{central_control.prefix}{item['name']}"
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -106,7 +106,13 @@ class BeckerCover(CoverEntity):
         if self._item.get("backend") == "centronic":
             return None
         if self._attr_current_cover_position == 0:
+            if self._central_control.invert_position:
+                return False
             return True
+        if self._attr_current_cover_position == 100:
+            if self._central_control.invert_position:
+                return True
+            return False
         return False
 
     @property
@@ -140,13 +146,20 @@ class BeckerCover(CoverEntity):
     @property
     def reversed(self) -> bool:
         """Whether the conver is reversed (only awning)."""
+
+        # exlude awning from invert_position
+        if (
+            self._central_control.invert_position
+            and self._item.get("device_type") not in BECKER_COVER_REVERSE_TYPES
+        ):
+            return True
+
         return self._item.get("device_type") in BECKER_COVER_REVERSE_TYPES
 
     async def async_close_cover(self, **kwargs: Any) -> None:
         """Close the cover."""
-        direction = 1
-        if self.reversed:
-            direction = -1
+        direction = -1 if self.reversed else 1
+
         await self._central_control.group_send_command(
             group_id=int(self.unique_id),
             command="move",
@@ -155,9 +168,7 @@ class BeckerCover(CoverEntity):
 
     async def async_open_cover(self, **kwargs: Any) -> None:
         """Open the cover."""
-        direction = -1
-        if self.reversed:
-            direction = 1
+        direction = 1 if self.reversed else -1
 
         await self._central_control.group_send_command(
             group_id=int(self.unique_id),

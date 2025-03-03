@@ -16,14 +16,16 @@ async def async_setup_entry(
 ) -> bool:
     """Set up CentralControl from a config entry."""
 
-    address = entry.data["device_ip"]
+    address = entry.data["host_address"]
     cookie = entry.data.get("gw_token", None)
-    invert_position = entry.options.get("invert_position", False)
+    invert_position = entry.data.get("invert_position", False)
+    prefix = entry.data.get("prefix", None)
 
     central_control = CentralControl(
         address=address,
-        # address="https://gw.b-tronic.net/cc{}/cgi-bin/cc51rpc.cgi".format(shortName), # Connect through the gateway. Not recommended.
         cookie=cookie,
+        invert_position=invert_position,
+        prefix=prefix,
     )
     entry.runtime_data = central_control
 

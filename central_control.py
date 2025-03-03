@@ -9,14 +9,24 @@ import requests
 class CentralControl:
     """API Client for the CentralControl devices."""
 
-    def __init__(self, address: str, cookie: str | None = None) -> None:
+    def __init__(
+        self,
+        address: str,
+        cookie: str | None = None,
+        prefix: str = "",
+        invert_position: bool = False,
+    ) -> None:
         """Init.
 
         address -- CGI Endpoint for the deviced. This needs to point to the correct path for example: http://192.168.1.10/cgi-bin/cc51rpc.cgi
         cookie -- in case you want to connect through gw.b-tronic.net
+        prefix -- prefix for the entity names
+        invert_position -- invert the position display
         """
 
-        self.address = address
+        self._prefix = f"{prefix}_" if prefix else ""
+        self._invert_position = invert_position
+        self.address = f"http://{address}/cgi-bin/cc51rpc.cgi"
         self._headers = {
             "Origin": "https://gw.b-tronic.net",
             "Host": "gw.b-tronic.net",
@@ -24,6 +34,18 @@ class CentralControl:
         }
         if cookie is not None:
             self._headers["Cookie"] = cookie
+
+    @property
+    def prefix(self) -> str:
+        """Return the prefix."""
+
+        return self._prefix
+
+    @property
+    def invert_position(self) -> bool:
+        """If position display should be inverted."""
+
+        return self._invert_position
 
     async def _jrpc_request(
         self, data: dict | list[dict], timeout: int = 10

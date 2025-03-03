@@ -1,8 +1,39 @@
 {
-  "common": {
-    "invert_position": "Invert cover position",
-    "device_ip": "Device IP"
+  "config": {
+    "abort": {
+      "already_configured": "Device is already configured",
+      "reauth_successful": "Re-authentication was successful",
+      "reconfigure_successful": "Re-configuration was successful",
+      "unique_id_mismatch": "The user identifier does not match the previous identifier"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "invert_position": "Invert cover positions",
+          "host_address": "Device IP",
+          "prefix": "Prefix"
+        },
+        "data_description": {
+          "invert_position": "Reverses the display of the position.",
+          "host_address": "The IPv4 address of your CentralControl.",
+          "prefix": "Adds a prefix to entity names."
+        }
+      },
+      "reconfigure": {
+        "data": {
+          "invert_position": "Invert cover positions",
+          "host_address": "Device IP",
+          "prefix": "Prefix"
+        },
+        "data_description": {
+          "invert_position": "Reverses the display of the position.",
+          "host_address": "The IPv4 address of your CentralControl.",
+          "prefix": "Adds a prefix to entity names."
+        }
+      }
+    }
   },
+
   "entity": {
     "sensor": {
       "dawn": {

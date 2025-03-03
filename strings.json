@@ -1,38 +1,21 @@
 {
-  "common": {
-    "invert_position": "Invert cover position",
-    "device_ip": "Device IP"
-  },
-
   "config": {
+    "abort": {
+      "reconfigure_successful": "[%key:common::config_flow::abort::reconfigure_successful%]"
+    },
     "step": {
       "user": {
         "data": {
-          "invert_position": "[%key:common::invert_position%]",
-          "device_ip": "[%key:common::device_ip%]"
+          "invert_position": "[%key:common::config_flow::data::invert_position%]",
+          "device_ip": "[%key:common::config_flow::data::device_ip%]",
+          "prefix": "[%key:common::config_flow::data::device_ip%]"
         }
       },
       "reconfigure": {
         "data": {
-          "invert_position": "[%key:common::invert_position%]",
-          "device_ip": "[%key:common::device_ip%]"
-        }
-      }
-    }
-  },
-
-  "options": {
-    "step": {
-      "user": {
-        "data": {
-          "invert_position": "[%key:common::invert_position%]",
-          "device_ip": "[%key:common::device_ip%]"
-        }
-      },
-      "reconfigure": {
-        "data": {
-          "invert_position": "[%key:common::invert_position%]",
-          "device_ip": "[%key:common::device_ip%]"
+          "invert_position": "[%key:common::config_flow::data::invert_position%]",
+          "device_ip": "[%key:common::config_flow::data::device_ip%]",
+          "prefix": "[%key:common::config_flow::data::device_ip%]"
         }
       }
     }
