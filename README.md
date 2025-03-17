@@ -15,6 +15,17 @@ Requires a fully set-up CC31, CC41 or CC51.
   * Wind: 0 - 11
   * Rain: 0 (no rain) or 1 (rain)
 
+## Install using HACS:
+
+1. Install HACS
+2. Go to HACS and click "..." at top of the right corner: Select "custom repositories" and paste the link of this repository `https://github.com/DominikStarke/becker_centralcontrol_has`
+3. Click on install and reboot Home Assistance (HA)
+4. Once HA is up again, go to settings -> Devices and click "add integration" at the bottom right corner
+5. Now, you see Becker CentralControl, click and enter the IP address of your CentralControl
+
+**For instructions on manual installation look below**
+
+
 ## Usage:
 
 ![Step 1](assets/1.png)
@@ -49,14 +60,6 @@ The API allows to:
 - get the current state of devices which support feedback
 
 See [central_control.py](central_control.py) for a more comprehensive guide on API usage.
-
-## HACS Installation:
-1. Install HACS
-2. Go to HACS and klick to "..." at top of the right corner: Select "custom repositories" and paste the link of this repository `https://github.com/DominikStarke/becker_centralcontrol_has`
-3. Click on install and reboot Home Assistance (HA)
-4. Once HA is up again, go to settings -> Devices and click "add integration" at the bottom right corner
-5. Now, you see Becker CentralControl, click and enter the IP address of your CentralControl
-
 
 ## Manual Installation:
 
