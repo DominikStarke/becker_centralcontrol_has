@@ -50,6 +50,14 @@ The API allows to:
 
 See [central_control.py](central_control.py) for a more comprehensive guide on API usage.
 
+## HACS Installation:
+1. Install HACS
+2. Go to HACS and klick to "..." at top of the right corner: Select "custom repositories" and paste the link of this repository `https://github.com/DominikStarke/becker_centralcontrol_has`
+3. Click on install and reboot Home Assistance (HA)
+4. Once HA is up again, go to settings -> Devices and click "add integration" at the bottom right corner
+5. Now, you see Becker CentralControl, click and enter the IP address of your CentralControl
+
+
 ## Manual Installation:
 
 _Please use HACS to install this integration, this is mostly developer notes:_
