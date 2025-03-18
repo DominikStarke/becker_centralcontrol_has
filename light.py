@@ -5,17 +5,9 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-import voluptuous as vol
-
-from homeassistant.components.light import (
-    PLATFORM_SCHEMA as LIGHT_PLATFORM_SCHEMA,
-    ColorMode,
-    LightEntity,
-)
+from homeassistant.components.light import ColorMode, LightEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -23,13 +15,6 @@ from .central_control import CentralControl
 from .const import BECKER_LIGHT_TYPES, DOMAIN, MANUFACTURER
 
 _LOGGER = logging.getLogger(__name__)
-
-# Validation of the user's configuration
-LIGHT_PLATFORM_SCHEMA = LIGHT_PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-    }
-)
 
 
 async def async_setup_entry(
