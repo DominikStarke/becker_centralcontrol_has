@@ -5,19 +5,14 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-import voluptuous as vol
-
 from homeassistant.components.cover import (
     ATTR_POSITION,
-    PLATFORM_SCHEMA as COVER_PLATFORM_SCHEMA,
     CoverDeviceClass,
     CoverEntity,
     CoverEntityFeature,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -25,15 +20,6 @@ from .central_control import CentralControl
 from .const import BECKER_COVER_REVERSE_TYPES, COVER_MAPPING, DOMAIN, MANUFACTURER
 
 _LOGGER = logging.getLogger(__name__)
-
-# Validation of the user's configuration
-COVER_PLATFORM_SCHEMA = COVER_PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_USERNAME, default="admin"): cv.string,
-        vol.Optional(CONF_PASSWORD): cv.string,
-    }
-)
 
 
 async def async_setup_entry(
@@ -113,7 +99,7 @@ class BeckerCover(CoverEntity):
             if self._central_control.invert_position:
                 return True
             return False
-        return False
+        return None
 
     @property
     def unique_id(self) -> str:
@@ -123,7 +109,7 @@ class BeckerCover(CoverEntity):
     @property
     def name(self) -> str:
         """The items name, "Unknown" if None."""
-        return self._item.get("name", "Unknown")
+        return f"{self._item.get('name', 'Unknown')}"
 
     @property
     def should_poll(self) -> bool:
