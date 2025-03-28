@@ -1,7 +1,7 @@
 # Becker CentralControl HAS
 
 Control your Centronic, CentronicPLUS and B-Tronic devices with Homeassistant.
-Requires a fully set-up CC31, CC41 or CC51.
+Requires a fully set-up CC31, CC41 or CC51, with the depending usb-sticks for controlling the devices.
 
 ## Device support:
 
@@ -19,7 +19,7 @@ Requires a fully set-up CC31, CC41 or CC51.
 
 1. Install HACS
 2. Go to HACS and click "..." at top of the right corner: Select "custom repositories" and paste the link of this repository `https://github.com/DominikStarke/becker_centralcontrol_has`
-3. Click on install and reboot Home Assistance (HA)
+3. Select "Integration" and then Click on install and reboot Home Assistance (HA)
 4. Once HA is up again, go to settings -> Devices and click "add integration" at the bottom right corner
 5. Now, you see Becker CentralControl, click and enter the IP address of your CentralControl
 
