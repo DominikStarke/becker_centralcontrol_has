@@ -1,6 +1,5 @@
 {
   "name": "Control your Becker Centronic, CentronicPLUS and B-Tronic devices with Homeassistant.",
   "content_in_root": false,
-  "zip_release": true,
   "homeassistant": "2025.1.0"
 }
