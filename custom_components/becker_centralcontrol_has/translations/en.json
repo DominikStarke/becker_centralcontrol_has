@@ -1,35 +1,33 @@
 {
   "config": {
     "abort": {
-      "already_configured": "Device is already configured",
-      "reauth_successful": "Re-authentication was successful",
-      "reconfigure_successful": "Re-configuration was successful",
-      "unique_id_mismatch": "The user identifier does not match the previous identifier"
+      "already_configured": "This Becker-Antriebe CentralControl is already configured.",
+      "reconfigure_successful": "This Becker-Antriebe CentralControl has been reconfigured successfully."
     },
     "step": {
       "user": {
         "data": {
-          "invert_position": "Invert cover positions",
-          "host_address": "Device IP",
+          "invert_position": "Invert cover presentation?",
+          "host_address": "Device-IP",
           "prefix": "Prefix"
         },
         "data_description": {
-          "invert_position": "Reverses the display of the position.",
-          "host_address": "The IPv4 address of your CentralControl.",
-          "prefix": "Adds a prefix to entity names."
+          "invert_position": "Inverts the presentation of the cover positions.",
+          "host_address": "Enter the CentralControls device address. E.g. centralcontrol.local or the IPv4-address.",
+          "prefix": "Adds a prefix to created entities. E.g. becker_"
         }
       },
       "reconfigure": {
         "data": {
-          "invert_position": "Invert cover positions",
-          "host_address": "Device IP",
+          "invert_position": "Invert cover presentation?",
+          "host_address": "Device-IP",
           "prefix": "Prefix"
-        },
+       },
         "data_description": {
-          "invert_position": "Reverses the display of the position.",
-          "host_address": "The IPv4 address of your CentralControl.",
-          "prefix": "Adds a prefix to entity names."
-        }
+          "invert_position": "Inverts the presentation of the cover positions.",
+          "host_address": "Enter the CentralControls device address. E.g. centralcontrol.local or the IPv4-address.",
+          "prefix": "Adds a prefix to created entities. E.g. becker_"
+       }
       }
     }
   },
@@ -37,7 +35,7 @@
   "entity": {
     "sensor": {
       "dawn": {
-        "name": "Dawn"
+        "name": "Dusk"
       },
       "sun": {
         "name": "Sun"
@@ -48,8 +46,8 @@
       "rain": {
         "name": "Rain",
         "state": {
-          "dry": "Dry",
-          "rain": "Rain"
+          "dry": "no rain",
+          "rain": "rain"
         }
       },
       "temp": {
