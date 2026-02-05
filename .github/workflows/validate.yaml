@@ -1,6 +1,8 @@
 name: Validate with Hacs
 
 on:
+  workflow_dispatch:
+  
   push:
     branches:
       - main

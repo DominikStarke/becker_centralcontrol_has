@@ -1,6 +1,8 @@
 name: Validate with Hassfest
 
 on:
+  workflow_dispatch:
+  
   push:
     branches:
       - main
