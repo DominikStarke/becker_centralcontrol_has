@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Fix workspace ownership
+# sudo chown -R $(id -u):$(id -g) "${WORKSPACE_FOLDER:-/workspaces/becker_centralcontrol_has}/config"

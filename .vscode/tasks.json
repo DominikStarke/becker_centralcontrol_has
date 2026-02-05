@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Prepare Home Assistant Config",
+      "type": "shell",
+      "command": "mkdir -p ${workspaceFolder}/config && if [ ! -f ${workspaceFolder}/config/configuration.yaml ]; then hass --config ${workspaceFolder}/config --script ensure_config; fi",
+      "presentation": {
+        "reveal": "silent"
+      }
+    },
+    {
+      "label": "Install Requirements",
+      "type": "shell",
+      "command": "pip3 install --use-deprecated=legacy-resolver -r requirements.txt",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+  ]
+}

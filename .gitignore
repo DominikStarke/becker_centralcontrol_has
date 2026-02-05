@@ -1,0 +1,20 @@
+# artifacts
+__pycache__
+.pytest*
+.cache
+*.egg-info
+*/build/*
+*/dist/*
+
+# pycharm
+.idea/
+
+# Unit test / coverage reports
+.coverage
+coverage.xml
+
+
+# Home Assistant configuration
+config/*
+!config/configuration.yaml
+

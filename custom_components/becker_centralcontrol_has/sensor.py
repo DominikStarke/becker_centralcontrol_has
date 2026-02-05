@@ -83,8 +83,11 @@ class BeckerSensor(SensorEntity):
         self._central_control: CentralControl = central_control
         self._attr_unique_id = f"{item['id']}-{value_type}"
         self._item = item
+
+        self._attr_name = f"{central_control.prefix}{item.get('name', 'Unknown')}"
+        self._attr_unique_id = f"{central_control.prefix}_{item.get('id')}_{value_type}"
+
         self._value_type = value_type
-        self.entity_id = f"sensor.{central_control.prefix}{item['name']}_{value_type}"
 
         if value_type is REMOTE_SUPPORTED_VALUES[REMOTE_TYPES.TEMPERATURE][0]:
             self.entity_description = CentralControlSensorDescription(
