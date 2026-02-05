@@ -1,32 +1,32 @@
 {
   "config": {
     "abort": {
-      "already_configured": "CentralControl ist bereits konfiguriert.",
-      "reconfigure_successful": "CentralControl erfolgreich neu konfiguriert."
+      "already_configured": "Diese Becker-Antriebe CentralControl ist bereits konfiguriert.",
+      "reconfigure_successful": "Die Becker-Antriebe CentralControl wurde erfolgreich neu konfiguriert."
     },
     "step": {
       "user": {
         "data": {
-          "invert_position": "Behang-Positionen umkehren",
+          "invert_position": "Behang-Positionen invertieren?",
           "host_address": "Geräte-IP",
           "prefix": "Präfix"
         },
         "data_description": {
-          "invert_position": "Kehrt die Darstellung der Position um.",
-          "host_address": "Die IP4-Adresse ihrer CentralControl.",
-          "prefix": "Fügt Entitäten-Bezeichnungen ein Präfix hinzu."
+          "invert_position": "Kehrt die Darstellung der Behangpositionen um.",
+          "host_address": "Tragen Sie bitte die Adresse ihrer CentralControl ein. Beispielsweise centralcontrol.local oder die IPv4-Adresse.",
+          "prefix": "Fügt Entitäten-Bezeichnungen ein Präfix hinzu. Beispielsweise becker_"
         }
       },
       "reconfigure": {
         "data": {
-          "invert_position": "Behang-Positionen umkehren",
+          "invert_position": "Behang-Positionen invertieren?",
           "host_address": "Geräte-IP",
           "prefix": "Präfix"
         },
         "data_description": {
-          "invert_position": "Kehrt die Darstellung der Position um.",
-          "host_address": "Die IP4-Adresse ihrer CentralControl.",
-          "prefix": "Fügt Entitäten-Bezeichnungen ein Präfix hinzu."
+          "invert_position": "Kehrt die Darstellung der Behangpositionen um.",
+          "host_address": "Tragen Sie bitte die Adresse ihrer CentralControl ein. Beispielsweise centralcontrol.local oder die IPv4-Adresse.",
+          "prefix": "Fügt Entitäten-Bezeichnungen ein Präfix hinzu. Beispielsweise becker_"
         }
       }
     }
@@ -46,7 +46,7 @@
       "rain": {
         "name": "Regen",
         "state": {
-          "dry": "Trocken",
+          "dry": "Kein Regen",
           "rain": "Regen"
         }
       },
