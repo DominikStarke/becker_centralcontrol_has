@@ -113,6 +113,32 @@ class CentralControl:
             }
         )
 
+    async def get_scene_list(self) -> dict:
+        """Retrieve the list of configured scenes."""
+        return await self.get_item_list(item_type="scene")
+
+    async def scene_invoke(self, scene_id: int) -> dict:
+        """Invoke a configured scene."""
+        return await self._jrpc_request(
+            data={
+                "jsonrpc": "2.0",
+                "id": 0,
+                "params": {"scene_id": scene_id},
+                "method": "deviced.scene_invoke",
+            }
+        )
+
+    async def scene_stop(self, scene_id: int) -> dict:
+        """Stop a configured scene."""
+        return await self._jrpc_request(
+            data={
+                "jsonrpc": "2.0",
+                "id": 0,
+                "params": {"scene_id": scene_id},
+                "method": "deviced.scene_stop",
+            }
+        )
+
     async def group_send_command(self, group_id: int, command: str, value) -> dict:
         """Send a command to a group.
 

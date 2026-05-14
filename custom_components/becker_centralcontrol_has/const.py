@@ -5,7 +5,12 @@ from enum import StrEnum
 from homeassistant.components.cover import CoverDeviceClass
 from homeassistant.const import Platform
 
-PLATFORMS: list[Platform] = [Platform.COVER, Platform.LIGHT, Platform.SENSOR]
+PLATFORMS: list[Platform] = [
+    Platform.COVER,
+    Platform.LIGHT,
+    Platform.SCENE,
+    Platform.SENSOR,
+]
 DOMAIN = "becker_centralcontrol_has"
 MANUFACTURER = "Becker Antriebe GmbH"
 
