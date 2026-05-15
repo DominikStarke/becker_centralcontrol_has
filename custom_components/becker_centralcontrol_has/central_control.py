@@ -59,7 +59,7 @@ class CentralControl:
                     headers=self._headers,
                 )
 
-                return json.loads(response.text.replace("\0", ""))
+                return json.loads(response.content.decode("utf-8").replace("\0", ""))
         except TimeoutError:
             if data is list:
                 return []

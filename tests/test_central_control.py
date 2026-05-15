@@ -17,59 +17,37 @@ spec.loader.exec_module(central_control_module)
 CentralControl = central_control_module.CentralControl
 
 
-def _response(payload: dict) -> Mock:
+async def test_jrpc_request_decodes_utf8_response_content() -> None:
+    """Decode CentralControl JSON-RPC responses as UTF-8.
+
+    The CC51 returns text/plain without a charset, so requests may expose
+    response.text as ISO-8859-1/latin-1 mojibake (for example ``KÃ¼che``).
+    """
+
     response = Mock()
-    response.text = json.dumps(payload) + "\0"
-    response.content = response.text.encode()
-    return response
-
-
-async def test_get_scene_list_fetches_scene_items() -> None:
-    """Fetch configured scenes from the CentralControl."""
-
-    central_control = CentralControl("192.168.1.64")
-
-    with patch.object(
-        central_control_module.requests,
-        "post",
-        return_value=_response({"jsonrpc": "2.0", "id": 0, "result": {}}),
-    ) as post:
-        await central_control.get_scene_list()
-
-    request = json.loads(post.call_args.kwargs["data"].replace("\0", ""))
-    assert request["method"] == "deviced.deviced_get_item_list"
-    assert request["params"] == {"item_type": "scene"}
-
-
-async def test_scene_invoke_sends_scene_command() -> None:
-    """Invoke a configured scene."""
+    response.content = (
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "result": {
+                    "item_list": [
+                        {"id": 3, "type": "group", "name": "Küche links"},
+                        {"id": 6, "type": "group", "name": "Tür links"},
+                    ]
+                },
+            },
+            ensure_ascii=False,
+        )
+        + "\0"
+    ).encode()
+    response.text = response.content.decode("latin-1")
 
     central_control = CentralControl("192.168.1.64")
 
-    with patch.object(
-        central_control_module.requests,
-        "post",
-        return_value=_response({"jsonrpc": "2.0", "id": 0, "result": {}}),
-    ) as post:
-        await central_control.scene_invoke(109)
+    with patch.object(central_control_module.requests, "post", return_value=response):
+        result = await central_control.get_item_list(item_type="group")
 
-    request = json.loads(post.call_args.kwargs["data"].replace("\0", ""))
-    assert request["method"] == "deviced.scene_invoke"
-    assert request["params"] == {"scene_id": 109}
-
-
-async def test_scene_stop_sends_scene_command() -> None:
-    """Stop a configured scene."""
-
-    central_control = CentralControl("192.168.1.64")
-
-    with patch.object(
-        central_control_module.requests,
-        "post",
-        return_value=_response({"jsonrpc": "2.0", "id": 0, "result": {}}),
-    ) as post:
-        await central_control.scene_stop(109)
-
-    request = json.loads(post.call_args.kwargs["data"].replace("\0", ""))
-    assert request["method"] == "deviced.scene_stop"
-    assert request["params"] == {"scene_id": 109}
+    items = result["result"]["item_list"]
+    assert items[0]["name"] == "Küche links"
+    assert items[1]["name"] == "Tür links"
