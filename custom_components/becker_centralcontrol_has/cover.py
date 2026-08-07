@@ -101,7 +101,8 @@ class BeckerCover(CoverEntity):
             if self._central_control.invert_position:
                 return True
             return False
-        return None
+        # Any position between the end stops means that the cover is open.
+        return False
 
     @property
     def unique_id(self) -> str:
