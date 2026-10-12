@@ -6,6 +6,7 @@ from homeassistant.components.cover import CoverDeviceClass
 from homeassistant.const import Platform
 
 PLATFORMS: list[Platform] = [
+    Platform.CLIMATE,
     Platform.COVER,
     Platform.LIGHT,
     Platform.SCENE,

@@ -226,3 +226,164 @@ class CentralControl:
         item_state = data[1].get("result", {}).get("state", {})
 
         return {**group_state, **item_state} if group_state or item_state else None
+
+    async def hvac_zone_get_mode(self, hvac_id: int) -> str | None:
+        """Retrieve the operation mode of a hvac zone.
+
+        HVAC zones are groups of thermostats (device type thermostat), optionally
+        with a temperature sensor and window sensors. Zones can be listed with
+        get_item_list(list_type="climate-zones").
+
+        Parameters:
+        ----------
+        hvac_id : int
+            Id of the hvac zone (Number)
+
+        Returns:
+        -------
+        The operation mode (String): "eco", "comfort", "individual" or "anti-freeze".
+        None if the request failed.
+
+        """
+        data = await self._jrpc_request(
+            data={
+                "jsonrpc": "2.0",
+                "id": 0,
+                "params": {"hvac_id": hvac_id},
+                "method": "deviced.hvac_zone_get_mode",
+            }
+        )
+        return (data or {}).get("result", {}).get("mode")
+
+    async def hvac_zone_set_mode(self, hvac_id: int, mode: str) -> dict:
+        """Select the basic operation mode of a hvac zone.
+
+        Parameters:
+        ----------
+        hvac_id : int
+            Id of the hvac zone (Number)
+        mode : str
+            "eco", "comfort", "individual" or "anti-freeze" (String)
+
+        """
+        return await self._jrpc_request(
+            data={
+                "jsonrpc": "2.0",
+                "id": 0,
+                "params": {"hvac_id": hvac_id, "mode": mode},
+                "method": "deviced.hvac_zone_set_mode",
+            }
+        )
+
+    async def hvac_zone_get_temperature(
+        self, hvac_id: int, mode: str = "individual"
+    ) -> float | None:
+        """Retrieve the target temperature of an operation mode of a hvac zone.
+
+        Parameters:
+        ----------
+        hvac_id : int
+            Id of the hvac zone (Number)
+        mode : str
+            "eco", "comfort" or "individual" (default). "anti-freeze" has no
+            configurable temperature and is rejected by the device. (String)
+
+        Returns:
+        -------
+        The target temperature in centigrade (Number), None if the request failed.
+
+        """
+        data = await self._jrpc_request(
+            data={
+                "jsonrpc": "2.0",
+                "id": 0,
+                "params": {"hvac_id": hvac_id, "mode": mode},
+                "method": "deviced.hvac_zone_get_temperature",
+            }
+        )
+        return (data or {}).get("result", {}).get("temp")
+
+    async def hvac_zone_set_temperature(
+        self, hvac_id: int, temp: float, mode: str = "individual"
+    ) -> dict:
+        """Set the target temperature of an operation mode of a hvac zone.
+
+        This does not activate the mode, use hvac_zone_set_mode for that.
+
+        Parameters:
+        ----------
+        hvac_id : int
+            Id of the hvac zone (Number)
+        temp : float
+            Target temperature in centigrade (Number)
+        mode : str
+            "eco", "comfort" or "individual" (default) (String)
+
+        """
+        return await self._jrpc_request(
+            data={
+                "jsonrpc": "2.0",
+                "id": 0,
+                "params": {"hvac_id": hvac_id, "mode": mode, "temp": temp},
+                "method": "deviced.hvac_zone_set_temperature",
+            }
+        )
+
+    async def hvac_zone_get_schedule(self, hvac_id: int) -> dict:
+        """Retrieve the heating schedule of a hvac zone.
+
+        Parameters:
+        ----------
+        hvac_id : int
+            Id of the hvac zone (Number)
+
+        Returns:
+        -------
+        * enabled: scheduling enabled (Bool)
+        * schedule: switching points (Array of String), each formatted as
+          "weekdays/hh:mm/mode", e.g. "0123456/6:00/comfort"
+
+        """
+        return await self._jrpc_request(
+            data={
+                "jsonrpc": "2.0",
+                "id": 0,
+                "params": {"hvac_id": hvac_id},
+                "method": "deviced.hvac_zone_get_schedule",
+            }
+        )
+
+    async def hvac_zone_set_schedule(
+        self, hvac_id: int, enabled: bool, schedule: list[str] | None = None
+    ) -> dict:
+        """Set the heating schedule of a hvac zone.
+
+        Parameters:
+        ----------
+        hvac_id : int
+            Id of the hvac zone (Number)
+        enabled : bool
+            Scheduling active (Bool)
+        schedule : list[str]
+            Up to 49 switching points (optional Array). Each string follows the
+            pattern "w/hh:mm/mode": "w" are weekday indices (0: sunday,
+            6: saturday), "hh:mm" the time of day and "mode" one of "anti-freeze",
+            "eco", "comfort" or a decimal temperature in centigrade.
+
+        Returns:
+        -------
+        * overlap: true if there were overlaps (optional Bool)
+        * collisions: true if there were collisions (optional Bool)
+
+        """
+        params: dict = {"hvac_id": hvac_id, "enabled": enabled}
+        if schedule is not None:
+            params["schedule"] = schedule
+        return await self._jrpc_request(
+            data={
+                "jsonrpc": "2.0",
+                "id": 0,
+                "params": params,
+                "method": "deviced.hvac_zone_set_schedule",
+            }
+        )
